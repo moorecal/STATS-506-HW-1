@@ -9,18 +9,72 @@ editor: visual
 
 ## Problem 1 - Abalone Data
 
+### a)
+
 ```{r}
+#a)
+#Set directory and load data
 setwd("C:/Users/moore/Desktop/School/Master/STATS 506/STATS-506-HW-1/abalone")
 
-abalone <- read.table("abalone.data")
+abalone <- read.csv("abalone.data")
+
+#Rename columns
+colnames(abalone)[1:9] <- c("Sex", "Length", "Diameter", "Height", "Whole weight", "Shucked weight", "Viscera weight", "Shell weight", "Rings")
+
+#b)
+table(abalone$Sex)
 
 ```
 
-You can add options to executable code like this
+There are 1,307 females, 1,526 males, and 1,342 infants.
+
+### c), #1
 
 ```{r}
-#| echo: false
-2 * 2
+#c)
+
+#1)
+lm(formula = Rings ~ `Whole weight` + `Shucked weight` + `Viscera weight` + `Shell weight`, data = abalone)
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+Shell weight has the highest correlation with Rings, with a coefficient of 13.448
+
+### c), #2
+
+```{r}
+#2)
+lm(formula = `Shell weight` ~ Sex, data = abalone)
+```
+
+Females correlate the strongest with Shell weight.
+
+### c), #3
+
+```{r}
+#3)
+max_weights <- c(abalone[which.max(abalone$Rings),]["Whole weight"],
+                 abalone[which.max(abalone$Rings),]["Shucked weight"],
+                 abalone[which.max(abalone$Rings),]["Viscera weight"],
+                 abalone[which.max(abalone$Rings),]["Shell weight"])
+
+max_weights
+```
+
+Whole weight is 1.8075, Shucked weight is 0.7055, Viscera weight is 0.3215, Shell weight is 0.475
+
+### c), #4
+
+```{r}
+#4)
+weight_prop <- sum(abalone$`Viscera weight` > abalone$`Shell weight`)/nrow(abalone)
+weight_prop
+```
+
+Only ~6.5% of the observations have a Viscera weight larger than their Shell weight.
+
+### d)
+
+```{r}
+#d)
+
+```
