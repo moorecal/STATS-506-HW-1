@@ -20,7 +20,11 @@ abalone <- read.csv("abalone.data")
 
 #Rename columns
 colnames(abalone)[1:9] <- c("Sex", "Length", "Diameter", "Height", "Whole weight", "Shucked weight", "Viscera weight", "Shell weight", "Rings")
+```
 
+### b)
+
+```{r}
 #b)
 table(abalone$Sex)
 
@@ -28,27 +32,32 @@ table(abalone$Sex)
 
 There are 1,307 females, 1,526 males, and 1,342 infants.
 
-### c), #1
+### c) #1
 
 ```{r}
 #c)
 
 #1)
-lm(formula = Rings ~ `Whole weight` + `Shucked weight` + `Viscera weight` + `Shell weight`, data = abalone)
+cov(abalone$Rings, abalone$`Whole weight`)
+cov(abalone$Rings, abalone$`Shucked weight`)
+cov(abalone$Rings, abalone$`Viscera weight`)
+cov(abalone$Rings, abalone$`Shell weight`)
 ```
 
-Shell weight has the highest correlation with Rings, with a coefficient of 13.448
+Whole weight has the greatest correlation with Rings, with a correlation of 0.855.
 
-### c), #2
+### c) #2
 
 ```{r}
 #2)
-lm(formula = `Shell weight` ~ Sex, data = abalone)
+cov(abalone$Sex == "F", abalone$`Whole weight`)
+cov(abalone$Sex == "M", abalone$`Whole weight`)
+cov(abalone$Sex == "I", abalone$`Whole weight`)
 ```
 
-Females correlate the strongest with Shell weight.
+Being infant has the strongest correlation with Whole weight, with a correlation of -0.128. It is the greatest correlation in terms of magnitude, the correlation is more strongly negative than the others are positive.
 
-### c), #3
+### c) #3
 
 ```{r}
 #3)
@@ -62,7 +71,7 @@ max_weights
 
 Whole weight is 1.8075, Shucked weight is 0.7055, Viscera weight is 0.3215, Shell weight is 0.475
 
-### c), #4
+### c) #4
 
 ```{r}
 #4)
@@ -76,5 +85,43 @@ Only ~6.5% of the observations have a Viscera weight larger than their Shell wei
 
 ```{r}
 #d)
+cor_F <- c(cov(abalone$Sex == "F", abalone$`Whole weight`),
+           cov(abalone$Sex == "F", abalone$`Shucked weight`),
+           cov(abalone$Sex == "F", abalone$`Viscera weight`),
+           cov(abalone$Sex == "F", abalone$`Shell weight`))
 
+cor_M <- c(cov(abalone$Sex == "M", abalone$`Whole weight`),
+           cov(abalone$Sex == "M", abalone$`Shucked weight`),
+           cov(abalone$Sex == "M", abalone$`Viscera weight`),
+           cov(abalone$Sex == "M", abalone$`Shell weight`))
+
+cor_I <- c(cov(abalone$Sex == "I", abalone$`Whole weight`),
+           cov(abalone$Sex == "I", abalone$`Shucked weight`),
+           cov(abalone$Sex == "I", abalone$`Viscera weight`),
+           cov(abalone$Sex == "I", abalone$`Shell weight`))
+
+sex_weight_table <- rbind(cor_F, cor_M, cor_I)
+colnames(sex_weight_table) <- c("Whole weight", "Shucked weight", "Viscera weight", "Shell weight")
+rownames(sex_weight_table) <- c("Female", "Male", "Infant")
+sex_weight_table
 ```
+
+### e)
+
+```{r}
+#Create subsets of the data that only include the certain sex pairs so that we can run the t-tests for each pair: F and M, F and I, and M and I.
+
+abalone_FM <- subset(abalone, abalone$Sex %in% c("F", "M"))
+abalone_FI <- subset(abalone, abalone$Sex %in% c("F", "I"))
+abalone_MI <- subset(abalone, abalone$Sex %in% c("M", "I"))
+
+ttest_FM <- t.test(abalone_FM$Rings ~ abalone_FM$Sex)
+ttest_FI <- t.test(abalone_FI$Rings ~ abalone_FI$Sex)
+ttest_MI <- t.test(abalone_MI$Rings ~ abalone_MI$Sex)
+
+ttest_FM
+ttest_FI
+ttest_MI
+```
+
+The difference in rings between females and males was the smallest. Both females and males had significantly different numbers of rings from infants.
