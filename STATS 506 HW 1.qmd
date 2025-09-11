@@ -19,7 +19,15 @@ setwd("C:/Users/moore/Desktop/School/Master/STATS 506/STATS-506-HW-1/abalone")
 abalone <- read.csv("abalone.data")
 
 #Rename columns
-colnames(abalone)[1:9] <- c("Sex", "Length", "Diameter", "Height", "Whole weight", "Shucked weight", "Viscera weight", "Shell weight", "Rings")
+colnames(abalone)[1:9] <- c("Sex", 
+                            "Length", 
+                            "Diameter", 
+                            "Height", 
+                            "Whole weight", 
+                            "Shucked weight", 
+                            "Viscera weight", 
+                            "Shell weight", 
+                            "Rings")
 ```
 
 ### b)
@@ -62,7 +70,8 @@ Being infant has the strongest correlation with Whole weight, with a correlation
 
 ```{r}
 #3)
-#Find the observation with the most Rings, and pulling the values for each weight from that observation
+#Find the observation with the most Rings, and pulling the values for each weight 
+#from that observation
 max_weights <- c(abalone[which.max(abalone$Rings),]["Whole weight"],
                  abalone[which.max(abalone$Rings),]["Shucked weight"],
                  abalone[which.max(abalone$Rings),]["Viscera weight"],
@@ -77,7 +86,8 @@ Whole weight is 1.8075, Shucked weight is 0.7055, Viscera weight is 0.3215, Shel
 
 ```{r}
 #4)
-#Count the observations with a viscera weight greater than shell weight, and divide by the total number of observations
+#Count the observations with a viscera weight greater than shell weight, and divide 
+#by the total number of observations
 weight_prop <- sum(abalone$`Viscera weight` > abalone$`Shell weight`)/nrow(abalone)
 weight_prop
 ```
@@ -104,9 +114,11 @@ cor_I <- c(cov(abalone$Sex == "I", abalone$`Whole weight`),
            cov(abalone$Sex == "I", abalone$`Viscera weight`),
            cov(abalone$Sex == "I", abalone$`Shell weight`))
 
-#Create the table with the weights split out by sex, and rename the rows and columns for easier reading
+#Create the table with the weights split out by sex, and rename the rows and columns 
+#for easier reading
 sex_weight_table <- rbind(cor_F, cor_M, cor_I)
-colnames(sex_weight_table) <- c("Whole weight", "Shucked weight", "Viscera weight", "Shell weight")
+colnames(sex_weight_table) <- c("Whole weight", "Shucked weight", 
+                                "Viscera weight", "Shell weight")
 rownames(sex_weight_table) <- c("Female", "Male", "Infant")
 sex_weight_table
 ```
@@ -114,7 +126,8 @@ sex_weight_table
 ### e)
 
 ```{r}
-#Create subsets of the data that only include the certain sex pairs so that we can run the t-tests for each pair: F and M, F and I, and M and I.
+#Create subsets of the data that only include the certain sex pairs so that we 
+#can run the t-tests for each pair: F and M, F and I, and M and I.
 
 abalone_FM <- subset(abalone, abalone$Sex %in% c("F", "M"))
 abalone_FI <- subset(abalone, abalone$Sex %in% c("F", "I"))
@@ -146,7 +159,18 @@ food <- read.csv("food_expenditure.csv")
 
 ```{r}
 #Rename variables
-colnames(food) <- c("ID", "Age", "Household Members", "State", "Currency", "Total Expenditures", "Grocery Store Expenditures", "Dining Out Expenditures", "Misc Expenditures", "Dine Out Count", "Alcohol", "Assistance Program")
+colnames(food) <- c("ID", 
+                    "Age", 
+                    "Household Members", 
+                    "State", 
+                    "Currency", 
+                    "Total Expenditures", 
+                    "Grocery Store Expenditures", 
+                    "Dining Out Expenditures", 
+                    "Misc Expenditures", 
+                    "Dine Out Count", 
+                    "Alcohol", 
+                    "Assistance Program")
 ```
 
 ### c)
@@ -167,21 +191,30 @@ Number of observations decreased by 32.
 ### d-h)
 
 ```{r}
-#d) Remove under 18 since they probably don't have a great sense of home expenditures usually, and also remove the couple of people who are apparently 150 since that seems sort of unlikely
+#d) Remove under 18 since they probably don't have a great sense of home expenditures 
+#usually, and also remove the couple of people who are apparently 150 since that seems 
+#sort of unlikely
 
 food_clean <- subset(food_USD, food_USD$Age %in% c(18:100))
 
 #e) Remove the observations with a state of XX
 food_clean <- subset(food_clean, !food_clean$State %in% c("XX"))
 
-#f) In total expenditures, there is an observation with "~350" rather than just 350. There are some negative values in the expenditure variables as well, and I'll remove them here but I'm not sure if it's great practice unless we're certain that they are the result of a data collection error.
+#f) In total expenditures, there is an observation with "~350" rather than just 350. 
+#There are some negative values in the expenditure variables as well, and I'll remove 
+#them here but I'm not sure if it's great practice unless we're certain that they are 
+#the result of a data collection error.
 food_clean$`Total Expenditures`[which(food_clean$`Total Expenditures` == "~350")] <- 350
 food_clean <- subset(food_clean, food_clean$`Total Expenditures` > 0)
 food_clean <- subset(food_clean, food_clean$`Grocery Store Expenditures` > 0)
 food_clean <- subset(food_clean, food_clean$`Dining Out Expenditures` > 0)
 food_clean <- subset(food_clean, food_clean$`Misc Expenditures` > 0)
 
-#g) There are some entries in dine out count that seem excessive. Eating out 30 times in a week is crazy for example, so I'll remove observations with a count of 20 and over, but there are conceivably some people who would do it. I again don't necessarily think that removing outliers just because they're outliers is the best practice.
+#g) There are some entries in dine out count that seem excessive. 
+#Eating out 30 times in a week is crazy for example, so I'll remove observations with 
+#a count of 20 and over, but there are conceivably some people who would do it. 
+#I again don't necessarily think that removing outliers just because they're outliers 
+#is the best practice.
 
 food_clean <- subset(food_clean, food_clean$`Dine Out Count` < 20)
 
@@ -203,7 +236,9 @@ Only 116 observations left after cleaning compared to an original 262.
 #'
 #' @param integer 
 #'
-#' @returns the next number in the Collatz Conjecture sequence. Gives errors requesting numeric and integer inputs if the user attempts a non numeric or negative. Rounds floats to nearest integer value smaller than it.
+#' @returns the next number in the Collatz Conjecture sequence. Gives errors requesting 
+#' numeric and integer inputs if the user attempts a non numeric or negative. 
+#' Rounds floats to nearest integer value smaller than it.
 #' @examples an input of 5 returns 16, of 16 returns 8 according to the rule
 nextCollatz <- function(integer){
   #Check for numbers
