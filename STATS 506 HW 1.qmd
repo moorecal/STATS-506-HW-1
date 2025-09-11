@@ -38,6 +38,7 @@ There are 1,307 females, 1,526 males, and 1,342 infants.
 #c)
 
 #1)
+#Using covariance function between Rings and each weight
 cov(abalone$Rings, abalone$`Whole weight`)
 cov(abalone$Rings, abalone$`Shucked weight`)
 cov(abalone$Rings, abalone$`Viscera weight`)
@@ -61,6 +62,7 @@ Being infant has the strongest correlation with Whole weight, with a correlation
 
 ```{r}
 #3)
+#Find the observation with the most Rings, and pulling the values for each weight from that observation
 max_weights <- c(abalone[which.max(abalone$Rings),]["Whole weight"],
                  abalone[which.max(abalone$Rings),]["Shucked weight"],
                  abalone[which.max(abalone$Rings),]["Viscera weight"],
@@ -75,6 +77,7 @@ Whole weight is 1.8075, Shucked weight is 0.7055, Viscera weight is 0.3215, Shel
 
 ```{r}
 #4)
+#Count the observations with a viscera weight greater than shell weight, and divide by the total number of observations
 weight_prop <- sum(abalone$`Viscera weight` > abalone$`Shell weight`)/nrow(abalone)
 weight_prop
 ```
@@ -85,6 +88,7 @@ Only ~6.5% of the observations have a Viscera weight larger than their Shell wei
 
 ```{r}
 #d)
+#Pull out the different weight values by sex
 cor_F <- c(cov(abalone$Sex == "F", abalone$`Whole weight`),
            cov(abalone$Sex == "F", abalone$`Shucked weight`),
            cov(abalone$Sex == "F", abalone$`Viscera weight`),
@@ -100,6 +104,7 @@ cor_I <- c(cov(abalone$Sex == "I", abalone$`Whole weight`),
            cov(abalone$Sex == "I", abalone$`Viscera weight`),
            cov(abalone$Sex == "I", abalone$`Shell weight`))
 
+#Create the table with the weights split out by sex, and rename the rows and columns for easier reading
 sex_weight_table <- rbind(cor_F, cor_M, cor_I)
 colnames(sex_weight_table) <- c("Whole weight", "Shucked weight", "Viscera weight", "Shell weight")
 rownames(sex_weight_table) <- c("Female", "Male", "Infant")
@@ -125,3 +130,72 @@ ttest_MI
 ```
 
 The difference in rings between females and males was the smallest. Both females and males had significantly different numbers of rings from infants.
+
+## Problem 2 - Food Expenditure Data
+
+### a)
+
+```{r}
+#Load data
+setwd("C:/Users/moore/Desktop/School/Master/STATS 506/STATS-506-HW-1")
+
+food <- read.csv("food_expenditure.csv")
+```
+
+### b)
+
+```{r}
+#Rename variables
+colnames(food) <- c("ID", "Age", "Household Members", "State", "Currency", "Total Expenditures", "Grocery Store Expenditures", "Dining Out Expenditures", "Misc Expenditures", "Dine Out Count", "Alcohol", "Assistance Program")
+```
+
+### c)
+
+```{r}
+#Count observations before currency restriction
+nrow(food)
+
+#Restrict to only USD
+food_USD <- subset(food, food$Currency %in% c("USD"))
+
+#Recheck observation count
+nrow(food_USD)
+```
+
+Number of observations decreased by 32.
+
+### d-h
+
+```{r}
+#d) Remove under 18 since they probably don't have a great sense of home expenditures usually, and also remove the couple of people who are apparently 150 since that seems sort of unlikely
+
+food_clean <- subset(food_USD, food_USD$Age %in% c(18:100))
+
+#e) Remove the observations with a state of XX
+food_clean <- subset(food_clean, !food_clean$State %in% c("XX"))
+
+#f) In total expenditures, there is an observation with "~350" rather than just 350. There are some negative values in the expenditure variables as well, and I'll remove them here but I'm not sure if it's great practice unless we're certain that they are the result of a data collection error.
+food_clean$`Total Expenditures`[which(food_clean$`Total Expenditures` == "~350")] <- 350
+food_clean <- subset(food_clean, food_clean$`Total Expenditures` > 0)
+food_clean <- subset(food_clean, food_clean$`Grocery Store Expenditures` > 0)
+food_clean <- subset(food_clean, food_clean$`Dining Out Expenditures` > 0)
+food_clean <- subset(food_clean, food_clean$`Misc Expenditures` > 0)
+
+#g) There are some entries in dine out count that seem excessive. Eating out 30 times in a week is crazy for example, so I'll remove observations with a count of 20 and over, but there are conceivably some people who would do it. I again don't necessarily think that removing outliers just because they're outliers is the best practice.
+
+food_clean <- subset(food_clean, food_clean$`Dine Out Count` < 20)
+
+#h)
+nrow(food_clean)
+
+```
+
+Only 116 observations left after cleaning compared to an original 262.
+
+## Problem 3 - Collatz Conjecture
+
+```{r}
+
+```
+
+
