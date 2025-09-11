@@ -164,7 +164,7 @@ nrow(food_USD)
 
 Number of observations decreased by 32.
 
-### d-h
+### d-h)
 
 ```{r}
 #d) Remove under 18 since they probably don't have a great sense of home expenditures usually, and also remove the couple of people who are apparently 150 since that seems sort of unlikely
@@ -196,6 +196,32 @@ Only 116 observations left after cleaning compared to an original 262.
 
 ```{r}
 
+
+#' Function to find the next value in the Collatz Conjecture sequence
+#'
+#' @param integer 
+#'
+#' @returns the next number in the Collatz Conjecture sequence. Gives errors requesting numeric and integer inputs if the user attempts a non numeric. Rounds floats to nearest integer value smaller than it.
+#' @examples an input of 5 returns 16, of 16 returns 8 according to the rule
+nextCollatz <- function(integer){
+  if(is.numeric(integer)){
+    if(round(integer) %% 2 == 0){
+      next_int <- round(integer)/2
+    }
+    else if(round(integer) %% 2 != 0){
+      next_int <- 3*round(integer) + 1
+    }
+    return(next_int)
+  }
+  else{
+    return("Input must be numeric")
+  }
+}
+
+#Test
+nextCollatz(10)
+
+nextCollatz(11)
 ```
 
 
