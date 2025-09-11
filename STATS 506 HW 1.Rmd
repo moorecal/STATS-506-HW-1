@@ -1,8 +1,8 @@
 ---
 title: "STATS 506 HW 1"
 author: "Calder Moore"
-format: pdf
-editor: visual
+date: "2025-09-11"
+output: pdf_document
 ---
 
 # STATS 506 Homework 1
